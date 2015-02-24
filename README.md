@@ -1,10 +1,10 @@
 # ChewyResque
 
-[![Build Status](https://travis-ci.org/razum2um/chewy_resque.svg?branch=master)](https://travis-ci.org/averell23/chewy_kiqqer)
-[![Code Climate](https://codeclimate.com/github/razum2um/chewy_resque.png)](https://codeclimate.com/github/averell23/chewy_kiqqer)
-[![Test Coverage](https://codeclimate.com/github/razum2um/chewy_resque/coverage.png)](https://codeclimate.com/github/averell23/chewy_kiqqer)
+[![Build Status](https://travis-ci.org/razum2um/chewy_resque.svg?branch=master)](https://travis-ci.org/razum2um/chewy_kiqqer)
+[![Code Climate](https://codeclimate.com/github/razum2um/chewy_resque.png)](https://codeclimate.com/github/razum2um/chewy_kiqqer)
+[![Test Coverage](https://codeclimate.com/github/razum2um/chewy_resque/coverage.png)](https://codeclimate.com/github/razum2um/chewy_kiqqer)
 
-This is an alternative udpate/callback mechanism for [Chewy](https://github.com/toptal/chewy). It queues the updates as [Sidekiq](https://github.com/mperham/sidekiq) jobs.
+This is an alternative udpate/callback mechanism for [Chewy](https://github.com/toptal/chewy). It queues the updates as [Resque](https://github.com/resque/resque) jobs.
 
 You can pass backrefs like with the standard chewy mechanism, but the job itself will always receive an array of ids.
 
@@ -30,14 +30,9 @@ Just add the module and set it up:
 
     class User < ActiveRecord::Base
       include ChewyResque::Mixin
-      
-      async_update_index index: 'users#user', queue: :other_than_default, backref: :something
-    end
 
-You can also include the mixin into ActiveRecord::Base in an initializer if it should be generally available.
-The queue name is optional. You can also set a default queue name for your application with:
-    
-    ChewyResque.default_queue = :my_queue
+      async_update_index index: 'users#user', backref: :something
+    end
 
 Giving a backref is also optional (also check the chewy docs for the concept). The backref is the element
 which will be indexed. The default is to use the current record.
@@ -53,7 +48,6 @@ which will be indexed. The default is to use the current record.
 
 The resque does *not* use Chewy's `atomic` update, since that functionality is deeply linked with Chewy's syncronous update mechanism.
 
-Instead, ChewyResque will bind itself to the `#after_commit` callback, which means that it will only trigger a new job after a complete database transaction. This behaviour also ensures that only one job is enqueued per transaction.
 
 However, if you have multiple database transactions, the resque will still queue multiple jobs. The same is true when you enqueue jobs manually.
 
@@ -61,8 +55,12 @@ ChewyResque uses locking via redis to ensure that all updates for one database r
 
 ## Logging
 
-Logging is disabled by default, but you can set `ChewyResque.logger` if you need log output (e.g. `ChewyKiqqer.logger = Rails.logger`). ChewyKiqqer uses ActiveSupport notifications, which you can also subscribe to.
+Logging is disabled by default, but you can set `ChewyResque.logger` if you need log output (e.g. `ChewyResque.logger = Rails.logger`). ChewyResque uses ActiveSupport notifications, which you can also subscribe to.
 See `log_subscriber.rb` for more info.
+
+## Acknoledgements
+
+This gem is heavily borrowed from [chewy_kiqqer](https://github.com/averell23/chewy_kiqqer).
 
 ## Contributing
 
