@@ -22,9 +22,9 @@ module ChewyResque
 
     module ClassMethods
 
-      def async_update_index(index: nil, queue: ChewyResque::default_queue, backref: :self)
+      def async_update_index(index, queue: ChewyResque::default_queue, backref: :self, only_if: nil)
         install_chewy_hooks if indexers.empty? # Only install them once
-        indexers << ChewyResque::Index.new(index: index, queue: queue, backref: backref)
+        indexers << ChewyResque::Index.new(index: index, queue: queue, backref: backref, only_if: only_if)
       end
 
       def install_chewy_hooks

@@ -4,13 +4,15 @@ module ChewyResque
 
   class Index
 
-    def initialize(backref: :self, index: nil, queue: ChewyResque.default_queue)
+    def initialize(backref: :self, index: nil, queue: ChewyResque.default_queue, only_if: nil)
+      @only_of = only_if
       @index_name = index
       @backref_method = backref
       @queue = queue
     end
 
     def enqueue(object)
+      return if @only_if.respond_to?(:call) && @only_if.call(object)
       Resque.enqueue(ChewyResque::Worker, @index_name, backref_ids(object))
     end
 

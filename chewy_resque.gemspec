@@ -18,8 +18,8 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_dependency 'resque', '~> 1.25'
-  spec.add_dependency 'chewy', '~> 0.6'
+  spec.add_dependency 'resque', '~> 1.24'
+  spec.add_dependency 'chewy', '~> 0.5'
   spec.add_dependency 'mlanett-redis-lock'
   spec.add_dependency 'activesupport', '>= 3.2.0'
 
