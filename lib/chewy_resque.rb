@@ -8,8 +8,6 @@ require "chewy_resque/index"
 require "chewy_resque/config"
 require "chewy_resque/log_subscriber"
 
-if defined?(::Rails)
-  ChewyResque.logger = Rails.logger
-end
+require "chewy_resque/railtie" if defined?(::Rails)
 
 ChewyResque::LogSubscriber.attach_to 'chewy_resque'
