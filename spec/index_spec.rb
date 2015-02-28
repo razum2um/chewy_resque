@@ -41,7 +41,7 @@ describe ChewyResque::Index do
         idx = ChewyResque::Index.new index: 'foo#bar',
                                      queue: 'hello'
 
-        expect(Resque).to receive(:enqueue).with(ChewyResque::Worker, 'foo#bar', [24])
+        expect(Resque).to receive(:enqueue_to).with('hello', ChewyResque::Worker, 'foo#bar', [24])
         idx.enqueue object
       end
     end

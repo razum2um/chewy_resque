@@ -3,6 +3,9 @@ require 'redis-lock'
 
 module ChewyResque
   class Worker
+    def self.queue
+      ChewyResque::locking_scope
+    end
 
     def self.perform(index_name, ids)
       ActiveSupport::Notifications.instrument('perform.chewy_resque', index_name: index_name, ids: ids) do
@@ -20,7 +23,5 @@ module ChewyResque
         Chewy.derive_type(index_name).import ids
       end
     end
-
-
   end
 end

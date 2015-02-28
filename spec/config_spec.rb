@@ -22,7 +22,7 @@ describe 'config' do
     end
 
     it 'has a default' do
-      expect(ChewyResque.locking_scope).to eq('default')
+      expect(ChewyResque.locking_scope).to eq('chewy')
     end
 
   end

@@ -20,25 +20,25 @@ describe ChewyResque::Mixin do
 
     it 'installs the hooks if nothing was installed yet' do
       expect(Gummi).to receive(:install_chewy_hooks)
-      Gummi.async_update_index(index: 'xxx')
+      Gummi.async_update_index('xxx')
     end
 
     it 'does not install the hooks twice' do
       expect(Gummi).to receive(:install_chewy_hooks).once
-      Gummi.async_update_index(index: 'xxx')
-      Gummi.async_update_index(index: 'xxx')
+      Gummi.async_update_index('xxx')
+      Gummi.async_update_index('xxx')
     end
 
     it 'installs the indexer' do
       expect(ChewyResque::Index).to receive(:new)
-                        .with(index: 'some#thing', queue: :medium, backref: :foobar)
+                        .with(index: 'some#thing', queue: :medium, backref: :foobar, only_if: nil)
                         .and_return(:idx)
-      Gummi.async_update_index(index: 'some#thing', queue: :medium, backref: :foobar)
+      Gummi.async_update_index('some#thing', queue: :medium, backref: :foobar)
       expect(Gummi.indexers).to eq [:idx]
     end
 
     it 'installs the indexer' do
-      Gummi.async_update_index(index: 'some#thing', queue: :medium, backref: :foobar)
+      Gummi.async_update_index('some#thing', queue: :medium, backref: :foobar)
       expect(GummiSubclass.indexers.size).to eq 1
       expect(GummiSubclass.indexers).to equal(Gummi.indexers)
     end

@@ -3,7 +3,7 @@ require 'logger'
 module ChewyResque
 
   def self.logger
-    @logger
+    @logger || Logger.new(STDOUT)
   end
 
   def self.logger=(value)
@@ -17,7 +17,7 @@ module ChewyResque
   end
 
   def self.locking_scope
-    @locking_scope || 'default'
+    @locking_scope || 'chewy'
   end
 
 end

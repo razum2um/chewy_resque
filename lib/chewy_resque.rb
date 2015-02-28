@@ -8,5 +8,8 @@ require "chewy_resque/index"
 require "chewy_resque/config"
 require "chewy_resque/log_subscriber"
 
+if defined?(::Rails)
+  ChewyResque.logger = Rails.logger
+end
 
 ChewyResque::LogSubscriber.attach_to 'chewy_resque'

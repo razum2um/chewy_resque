@@ -1,11 +1,12 @@
 require 'resque'
 
 module ChewyResque
-
   class Index
 
-    def initialize(backref: :self, index: nil, queue: ChewyResque.default_queue, only_if: nil)
-      @only_of = only_if
+    attr_reader :index_name
+
+    def initialize(backref: :self, index: nil, queue: nil, only_if: nil)
+      @only_if = only_if
       @index_name = index
       @backref_method = backref
       @queue = queue
@@ -13,7 +14,7 @@ module ChewyResque
 
     def enqueue(object)
       return if @only_if.respond_to?(:call) && @only_if.call(object)
-      Resque.enqueue(ChewyResque::Worker, @index_name, backref_ids(object))
+      Resque.enqueue_to(@queue || Resque.queue_from_class(ChewyResque::Worker), ChewyResque::Worker, @index_name, backref_ids(object))
     end
 
     def backref(object)
@@ -25,7 +26,5 @@ module ChewyResque
     def backref_ids(object)
       Array.wrap(backref(object)).map { |object| object.respond_to?(:id) ? object.id : object.to_i }
     end
-
   end
-
 end
