@@ -10,7 +10,7 @@ describe ChewyResque::Worker do
   it 'calls the indexing with chewy' do
     index = double
     expect(Chewy).to receive(:derive_type).with('foo#bar').and_return(index)
-    expect(index).to receive(:import).with([17])
+    expect(index).to receive(:update_index).with([17])
 
     worker.class.perform('foo#bar', [17])
   end

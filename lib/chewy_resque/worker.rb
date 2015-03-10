@@ -20,7 +20,8 @@ module ChewyResque
 
     def self.index(index_name, ids)
       ActiveSupport::Notifications.instrument('index.chewy_resque', index_name: index_name, ids: ids) do
-        Chewy.derive_type(index_name).import ids
+        # puts "\nchewy: #{Chewy.strategy.instance_eval { @stack } .map(&:name).inspect} index: #{index_name.inspect} ids: #{ids.inspect}\n"
+        Chewy.derive_type(index_name).update_index ids
       end
     end
   end

@@ -1,3 +1,4 @@
+require 'active_support/core_ext/object/blank'
 require 'resque'
 
 module ChewyResque
@@ -14,7 +15,12 @@ module ChewyResque
 
     def enqueue(object)
       return if @only_if.respond_to?(:call) && @only_if.call(object)
-      Resque.enqueue_to(@queue || Resque.queue_from_class(ChewyResque::Worker), ChewyResque::Worker, @index_name, backref_ids(object))
+      if (ids = backref_ids(object)).present?
+        Resque.enqueue_to(@queue || Resque.queue_from_class(ChewyResque::Worker),
+                          ChewyResque::Worker,
+                          @index_name,
+                          ids)
+      end
     end
 
     def backref(object)
