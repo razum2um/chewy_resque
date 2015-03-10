@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency 'resque', '~> 1.24'
-  spec.add_dependency 'chewy', '~> 0.5'
+  spec.add_dependency 'chewy'
   spec.add_dependency 'mlanett-redis-lock'
   spec.add_dependency 'activesupport', '>= 3.2.0'
 
