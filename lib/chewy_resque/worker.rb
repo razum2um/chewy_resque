@@ -1,3 +1,4 @@
+require 'chewy'
 require 'resque'
 require 'redis-lock'
 
@@ -20,8 +21,24 @@ module ChewyResque
 
     def self.index(index_name, ids)
       ActiveSupport::Notifications.instrument('index.chewy_resque', index_name: index_name, ids: ids) do
-        # puts "\nchewy: #{Chewy.strategy.instance_eval { @stack } .map(&:name).inspect} index: #{index_name.inspect} ids: #{ids.inspect}\n"
-        Chewy.derive_type(index_name).update_index ids
+        with_strategy do
+          Chewy.derive_type(index_name).update_index(ids)
+        end
+      end
+    end
+
+    def self.with_strategy
+      if Chewy.respond_to?(:strategy) && Chewy.strategy.current.name == :base
+        # production
+        begin
+          Chewy.strategy(:atomic)
+          yield
+        rescue
+          Chewy.strategy.pop
+        end
+      else
+        # 0.6.2 or test
+        yield
       end
     end
   end
