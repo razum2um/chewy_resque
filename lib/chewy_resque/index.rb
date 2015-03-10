@@ -15,7 +15,7 @@ module ChewyResque
 
     def enqueue(object)
       return if @only_if.respond_to?(:call) && @only_if.call(object)
-      if (ids = backref_ids(object)).present?
+      if (ids = backref_ids(object).compact).present?
         Resque.enqueue_to(@queue || Resque.queue_from_class(ChewyResque::Worker),
                           ChewyResque::Worker,
                           @index_name,
