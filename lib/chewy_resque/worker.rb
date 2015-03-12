@@ -33,7 +33,7 @@ module ChewyResque
         begin
           Chewy.strategy(:atomic)
           yield
-        rescue
+        ensure
           Chewy.strategy.pop
         end
       else
